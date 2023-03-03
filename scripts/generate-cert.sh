@@ -1,6 +1,6 @@
 #!/bin/bash
 ##
-# Generate CA tlsificates
+# Generate CA and certificates
 ##
 
 mkdir tmp/
