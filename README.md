@@ -168,7 +168,7 @@ It is possible to create 1000 *SealedSecret* objects, one by one, during 5 minut
 
 > **NOTE**
 > 
-> They are load tests performed in a laboratory environment with 1 Sealed Secrets controller replicas.
+> The load tests have been performed in a laboratory environment with 1 Sealed Secrets controller replicas
 
 ## Author
 
