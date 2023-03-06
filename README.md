@@ -196,11 +196,11 @@ Once the Argo CD instance and the ArgoCD application are created, it will be pos
 ```$bash
 oc get sealedsecret -n app
 NAME            AGE
-mysecret        11m
+mysecret-argocd        11m
 
 oc get secret -n app
 NAME            AGE
-mysecret                   Opaque                                1      11m
+mysecret-argocd                   Opaque                                1      11m
 ```
 
 ## Author
