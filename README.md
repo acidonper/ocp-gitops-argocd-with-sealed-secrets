@@ -181,15 +181,19 @@ kubeseal -f examples/secret-argo.yaml -n app --name mysecret-argocd \
  --format yaml > examples/argocd/sealedsecret.yaml
 ```
 
-Regarding the steps to deploy Argo CD in Openshift and create the respective Argo CD application that handles the creation of the secret, once the Red Hat GitOps is installed, are included in the following procedure:
+Regarding the steps to create the final namespace to host the respective *SealedSecret* objects and the respective Argo CD application that handles the creation of the secret, once the Red Hat GitOps is installed, are included in the following procedure:
 
 ```$bash
-oc new-project argocd
+oc new-project app
 
-oc apply -f argocd.yaml
+oc label namespace app argocd.argoproj.io/managed-by=openshift-gitops
 
-oc apply -f application.yaml
+oc apply -f application.yaml -n openshift-gitops
 ```
+
+> **NOTE**
+> 
+> Red Hat Openshift GitOps operator installs automatically an Argo CD instance in the namespace *openshift-gitops* that can be used to support a GitOps strategy
 
 Once the Argo CD instance and the ArgoCD application are created, it will be possible to review the *SealedSecret* object created and the respective *Secret* in Openshift:
 
