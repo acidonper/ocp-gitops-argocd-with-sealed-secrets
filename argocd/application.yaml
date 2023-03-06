@@ -1,0 +1,15 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: secrets
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/acidonper/ocp-gitops-argocd-with-sealed-secrets'
+    path: examples/argocd
+    targetRevision: HEAD
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: app
+  syncPolicy: {}

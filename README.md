@@ -170,6 +170,39 @@ It is possible to create 1000 *SealedSecret* objects, one by one, during 5 minut
 > 
 > The load tests have been performed in a laboratory environment with 1 Sealed Secrets controller replicas
 
+## Argo CD
+
+Once the previous knowledge about Sealed Secrets have been adquired, it is time to start playing with Argo CD. Firs of all, it is required to create the respective *SealedSecret* object from a *Secret* and push these changes to the git repository (*Please create a fork of this repository and make the respective changes*)
+
+```$bash
+kubeseal -f examples/secret-argo.yaml -n app --name mysecret-argocd \ 
+ --controller-namespace=sealedsecrets \
+ --controller-name=sealed-secrets \
+ --format yaml > examples/argocd/sealedsecret.yaml
+```
+
+Regarding the steps to deploy Argo CD in Openshift and create the respective Argo CD application that handles the creation of the secret, once the Red Hat GitOps is installed, are included in the following procedure:
+
+```$bash
+oc new-project argocd
+
+oc apply -f argocd.yaml
+
+oc apply -f application.yaml
+```
+
+Once the Argo CD instance and the ArgoCD application are created, it will be possible to review the *SealedSecret* object created and the respective *Secret* in Openshift:
+
+```$bash
+oc get sealedsecret -n app
+NAME            AGE
+mysecret        11m
+
+oc get secret -n app
+NAME            AGE
+mysecret                   Opaque                                1      11m
+```
+
 ## Author
 
 Asier Cidon @RedHat
