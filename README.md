@@ -188,7 +188,7 @@ oc new-project app
 
 oc label namespace app argocd.argoproj.io/managed-by=openshift-gitops
 
-oc apply -f application.yaml -n openshift-gitops
+oc apply -f argocd/application.yaml -n openshift-gitops
 ```
 
 > **NOTE**
