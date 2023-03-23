@@ -32,7 +32,7 @@ oc new-project sealedsecrets
 - Assign permissions to the default service account in order to be able to deploy the respective controller pod
  
 ```$bash
-oc adm policy add-scc-to-user anyuid -z sealed-secrets-controller -n sealedsecrets
+oc adm policy add-scc-to-user anyuid -z sealed-secrets -n sealedsecrets
 ```
 
 - Generate the respective certificates and create a secret
