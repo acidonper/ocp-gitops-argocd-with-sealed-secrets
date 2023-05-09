@@ -52,6 +52,12 @@ helm install sealed-secrets -n sealedsecrets --set-string secretName=cert-encryp
 
 Once the Sealed Secrets controller is installed and configured, it is time to start playing with Sealed Secrets. The following procedures include the main operations that it is possible to perform using Sealed Secrets.
 
+- Create the respective namespace
+ 
+```$bash
+oc new-project app
+```
+
 - Create a *Sealed Secret* object from a *Secret* file
 
 ```$bash
@@ -91,7 +97,7 @@ There are multiple operations and situations that it could be possible to assume
 
 ### Obtain Controller Certificate
 
-It is possible to obtain the Sealed Secrets controller's certificate exeuting the following command:
+It is possible to obtain the Sealed Secrets controller's certificate executing the following command:
 
 ```$bash
 kubeseal --controller-name=sealed-secrets --controller-namespace=sealedsecrets --fetch-cert
@@ -148,7 +154,7 @@ It is possible to modify the *Secret* objects that have been created by Sealed S
 For this reason, it is required to execute the following procedure to update a specific *SealedSecret* object:
 
 ```$bash
-oc extract secret/cert-encryption --to=.
+oc -n sealedsecrets extract secret/cert-encryption --to=.
 
 oc get sealedsecret mysecret -o yaml -n app |  kubeseal -o yaml --recovery-private-key tls.key --recovery-unseal >> new-secret.yaml
 
@@ -181,11 +187,9 @@ kubeseal -f examples/secret-argo.yaml -n app --name mysecret-argocd \
  --format yaml > examples/argocd/sealedsecret.yaml
 ```
 
-Regarding the steps to create the final namespace to host the respective *SealedSecret* objects and the respective Argo CD application that handles the creation of the secret, once the Red Hat GitOps is installed, are included in the following procedure:
+Regarding the steps to configure the final namespace to host the respective *SealedSecret* objects and the respective ArgoCD application that handles the creation of the secret, once the Red Hat Openshift GitOps operator is installed, are included in the following procedure:
 
 ```$bash
-oc new-project app
-
 oc label namespace app argocd.argoproj.io/managed-by=openshift-gitops
 
 oc apply -f argocd/application.yaml -n openshift-gitops
@@ -193,7 +197,7 @@ oc apply -f argocd/application.yaml -n openshift-gitops
 
 > **NOTE**
 > 
-> Red Hat Openshift GitOps operator installs automatically an Argo CD instance in the namespace *openshift-gitops* that can be used to support a GitOps strategy
+> Red Hat Openshift GitOps operator installs automatically an ArgoCD instance in the namespace *openshift-gitops* that can be used to support a GitOps strategy.
 
 Once the Argo CD instance and the ArgoCD application are created, it will be possible to review the *SealedSecret* object created and the respective *Secret* in Openshift:
 
