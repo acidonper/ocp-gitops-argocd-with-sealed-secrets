@@ -10,6 +10,7 @@ Bitnami Sealed Secrets encrypts your Secret into a SealedSecret, which is safe t
 - kubeseal CLI +0.19.5 - [Official Doc](https://github.com/bitnami-labs/sealed-secrets#linux)
 - Openshift +4.12
 - Oc CLI +4.12 - [Official Doc](https://docs.openshift.com/container-platform/4.12/cli_reference/openshift_cli/getting-started-cli.html)
+- Create a fork of this repository.
 
 ## Setting Up
 
@@ -22,6 +23,13 @@ Bitnami Sealed Secrets team has developed a Helm Chart for installing the soluti
 It is important to bear in mind that The kubeseal utility uses asymmetric crypto to encrypt secrets that only the controller can decrypt. Please visit the following [link](https://github.com/bitnami-labs/sealed-secrets/blob/main/docs/developer/crypto.md) for more information about security protocols and cryptographic tools used.
 
 In the following process, a Sealed Secrets controller will be installed using a custom certificate that was generated in the respective namespace previously. This installation model is designed for multi-cluster environments where it is required to use the same certificate in multiple Kubernetes clusters in order to facilitate operations and maintainability.
+
+- Clone your forked repository
+```$bash
+git clone https://github.com/your-github-user/ocp-gitops-argocd-with-sealed-secrets.git
+
+cd ocp-gitops-argocd-with-sealed-secrets/
+```
 
 - Create the respective namespace
  
@@ -102,17 +110,6 @@ It is possible to obtain the Sealed Secrets controller's certificate executing t
 ```$bash
 kubeseal --controller-name=sealed-secrets --controller-namespace=sealedsecrets --fetch-cert
 ```
-### Decrypt a SealedSecret Manually
-
-In order to obtain the information from a specific *SealedSecret* object, it is possible decrypt a *SealedSecret* object included in a file using the kubeseal CLI and the respective certificate.
-
-```$bash
-cat examples/sealedsecret.yaml | kubeseal -o yaml --recovery-private-key tmp/old/tls.key --recovery-unseal
-```
-
-> **NOTE**
-> 
-> This procedure could be interesting if Sealed Secrets controller's certificate has been rotated and it is required to recover the original *Secret* objects using the previous certificate
 
 ### Rotate SealedSecret Certificate
 
@@ -135,6 +132,18 @@ oc scale --replicas=1 deployment.apps/sealed-secrets -n sealedsecrets
 > 
 > The original *SealedSecret* and *Secret* objects do not disappear but it is required to modify *SealedSecret* objects in order to encrypt the information with the new certificate
 
+### Decrypt a SealedSecret Manually
+
+In order to obtain the information from a specific *SealedSecret* object, it is possible decrypt a *SealedSecret* object included in a file using the kubeseal CLI and the respective certificate.
+
+```$bash
+oc get sealedsecret mysecret -o yaml | kubeseal -o yaml --recovery-private-key tmp/old/tls.key --recovery-unseal
+```
+
+> **NOTE**
+> 
+> This procedure could be interesting if Sealed Secrets controller's certificate has been rotated and it is required to recover the original *Secret* objects using the previous certificate
+
 ### Identify Error Decrypting SealedSecret Objects
 
 After rotate certificates, it is possible to find errors if the *SealedSecret* objects are not modified. Execute the following procedure to detect these errors: 
@@ -151,19 +160,14 @@ E0303 10:33:27.741011       1 controller.go:230] no key could decrypt secret (fo
 
 It is possible to modify the *Secret* objects that have been created by Sealed Secret controller but you have to take into consideration that Sealed Secrets controller does not monitor the final *Secret* objects and any changes in the final object will be reemplaced when the original *SealedSecret* object is modified.
 
-For this reason, it is required to execute the following procedure to update a specific *SealedSecret* object:
+For this reason, it is required to execute the following procedure to update a specific *SealedSecret* object: 
+
+The next two commands make some steps in a sigle command - first they will get the secrets , *mysecret* and *mysecret2*, with the old *tls.key*. Then the new certificates will be updated and the configuration applied in the cluster.
 
 ```$bash
-oc -n sealedsecrets extract secret/cert-encryption --to=.
+oc get sealedsecret mysecret -o yaml | kubeseal -o yaml --recovery-private-key tmp/old/tls.key --recovery-unseal | kubeseal --controller-name=sealed-secrets --controller-namespace=sealedsecrets --format yaml | oc apply -n app -f -
 
-oc get sealedsecret mysecret -o yaml -n app |  kubeseal -o yaml --recovery-private-key tls.key --recovery-unseal >> new-secret.yaml
-
-vi new-secret.yaml (*Add some new literals)
-
-kubeseal -f new-secret.yaml -n app --name mysecret \
- --controller-namespace=sealedsecrets \
- --controller-name=sealed-secrets \
- --format yaml  | oc apply -n app -f -
+oc get sealedsecret mysecret2 -o yaml | kubeseal -o yaml --recovery-private-key tmp/old/tls.key --recovery-unseal | kubeseal --controller-name=sealed-secrets --controller-namespace=sealedsecrets --format yaml | oc apply -n app -f -
 ```
 
 ## Performance
@@ -178,10 +182,10 @@ It is possible to create 1000 *SealedSecret* objects, one by one, during 5 minut
 
 ## Argo CD
 
-Once the previous knowledge about Sealed Secrets have been adquired, it is time to start playing with Argo CD. Firs of all, it is required to create the respective *SealedSecret* object from a *Secret* and push these changes to the git repository (*Please create a fork of this repository and make the respective changes*)
+Once the previous knowledge about Sealed Secrets have been adquired, it is time to start playing with Argo CD. Firs of all, it is required to create the respective *SealedSecret* object from a *Secret* and push these changes to the git repository.
 
 ```$bash
-kubeseal -f examples/secret-argo.yaml -n app --name mysecret-argocd \ 
+kubeseal -f examples/secret-argo.yaml -n app --name mysecret-argocd \
  --controller-namespace=sealedsecrets \
  --controller-name=sealed-secrets \
  --format yaml > examples/argocd/sealedsecret.yaml
@@ -190,7 +194,31 @@ kubeseal -f examples/secret-argo.yaml -n app --name mysecret-argocd \
 Regarding the steps to configure the final namespace to host the respective *SealedSecret* objects and the respective ArgoCD application that handles the creation of the secret, once the Red Hat Openshift GitOps operator is installed, are included in the following procedure:
 
 ```$bash
+oc apply -f ClusterRole.yaml -n app
+
+oc adm policy add-role-to-user admin-sealedsecret system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller -n app
+```
+
+```$bash
 oc label namespace app argocd.argoproj.io/managed-by=openshift-gitops
+```
+
+Before creating the application it is necessary to make a commit and push to the forked repository. 
+
+```$bash
+git add .
+git commit -m "argocd sealed secrets"
+git push
+```
+
+Then change the *repoURL* in argocd/application.yaml with *your-github-user* and create the Argo CD application. This is because we want Argo CD to deploy the latest configuration in your fork repository.
+
+> **NOTE**
+> 
+> Replace *your-github-user*.
+
+```$bash
+sed -i 's/acidonper/your-github-user/g' argocd/application.yaml
 
 oc apply -f argocd/application.yaml -n openshift-gitops
 ```
@@ -209,6 +237,15 @@ mysecret-argocd        11m
 oc get secret -n app
 NAME            AGE
 mysecret-argocd                   Opaque                                1      11m
+```
+
+It is also possible to check the state of the Argo CD application in the terminal:
+
+```$bash
+oc get application secrets -n openshift-gitops
+
+NAME      SYNC STATUS   HEALTH STATUS
+secrets   Synced        Healthy
 ```
 
 ## Author

@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/jtovarro/ocp-gitops-argocd-with-sealed-secrets'
+    repoURL: 'https://github.com/acidonper/ocp-gitops-argocd-with-sealed-secrets'
     path: examples/argocd
     targetRevision: HEAD
   destination:
