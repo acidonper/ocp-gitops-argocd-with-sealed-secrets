@@ -166,7 +166,9 @@ The next two commands make some steps in a sigle command - first they will get t
 
 ```$bash
 oc get sealedsecret mysecret -o yaml | kubeseal -o yaml --recovery-private-key tmp/old/tls.key --recovery-unseal | kubeseal --controller-name=sealed-secrets --controller-namespace=sealedsecrets --format yaml | oc apply -n app -f -
+```
 
+```$bash
 oc get sealedsecret mysecret2 -o yaml | kubeseal -o yaml --recovery-private-key tmp/old/tls.key --recovery-unseal | kubeseal --controller-name=sealed-secrets --controller-namespace=sealedsecrets --format yaml | oc apply -n app -f -
 ```
 
