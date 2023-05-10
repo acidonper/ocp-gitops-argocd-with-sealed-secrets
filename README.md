@@ -213,7 +213,7 @@ git commit -m "argocd sealed secrets"
 git push
 ```
 
-Then change the *repoURL* in argocd/application.yaml with *your-github-user* and create the Argo CD application. This is because we want Argo CD to deploy the latest configuration in your fork repository.
+Then change the *repoURL* in argocd/application.yaml with *your-github-user* and create the Argo CD application. This is because we want Argo CD to deploy the latest configuration in your forked repository.
 
 > **NOTE**
 > 
