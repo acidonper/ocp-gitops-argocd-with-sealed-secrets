@@ -107,7 +107,7 @@ kubeseal --controller-name=sealed-secrets --controller-namespace=sealedsecrets -
 In order to obtain the information from a specific *SealedSecret* object, it is possible decrypt a *SealedSecret* object included in a file using the kubeseal CLI and the respective certificate.
 
 ```$bash
-cat examples/sealedsecret.yaml | kubeseal -o yaml --recovery-private-key tls-old.key --recovery-unseal
+cat examples/sealedsecret.yaml | kubeseal -o yaml --recovery-private-key tmp/old/tls.key --recovery-unseal
 ```
 
 > **NOTE**

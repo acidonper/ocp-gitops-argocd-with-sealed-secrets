@@ -3,7 +3,8 @@
 # Generate CA and certificates
 ##
 
-mkdir tmp/
+mkdir -p tmp/old
+cp tmp/* tmp/old
 openssl genrsa -out tmp/ca-key.pem 2048
 openssl req -x509 -sha256 -new -nodes -key tmp/ca-key.pem -days 3650 -out tmp/ca-tls.pem
 openssl req -out tmp/tls.csr -newkey rsa:2048 -nodes -keyout tmp/tls.key -subj "/"
