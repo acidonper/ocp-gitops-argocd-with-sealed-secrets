@@ -241,7 +241,7 @@ NAME            AGE
 mysecret-argocd                   Opaque                                1      11m
 ```
 
-It is also possible to check the state of the Argo CD application in the terminal:
+It is also possible to check the status of the Argo CD application in the terminal:
 
 ```$bash
 oc get application secrets -n openshift-gitops
