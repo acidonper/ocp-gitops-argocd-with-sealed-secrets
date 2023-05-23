@@ -12,7 +12,7 @@ oc new-project app
 - Create a *Sealed Secret* object from a *Secret* file
 
 ```$bash
-kubeseal -f examples/secret-argo.yaml -n app --name mysecret-argocd \
+kubeseal -f examples/secret-argo.yaml --name gitops-sealedsecret \
  --controller-namespace=sealedsecrets \
  --controller-name=sealed-secrets \
  --format yaml > examples/argocd/sealedsecret.yaml

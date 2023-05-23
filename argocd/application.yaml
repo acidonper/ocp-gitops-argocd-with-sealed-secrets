@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: gitops-sealed-secrets
+  name: gitops-sealedsecrets
 spec:
   project: default
   source:
