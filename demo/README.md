@@ -25,6 +25,13 @@ git add .
 git commit -m "argocd sealed secrets"
 git push
 ```
+
+- Create ArgoCD application
+
+```$bash
+oc apply -f argocd/application.yaml -n openshift-gitops
+```
+
 - Check Sealedsecrets created
 
 ```$bash
