@@ -196,7 +196,7 @@ kubeseal -f examples/secret-argo.yaml -n app --name mysecret-argocd \
 Regarding the steps to configure the final namespace to host the respective *SealedSecret* objects and the respective ArgoCD application that handles the creation of the secret, once the Red Hat Openshift GitOps operator is installed, are included in the following procedure:
 
 ```$bash
-oc apply -f ClusterRole.yaml -n app
+oc apply -f argocd/ClusterRole.yaml -n app
 
 oc adm policy add-role-to-user admin-sealedsecret system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller -n app
 ```
