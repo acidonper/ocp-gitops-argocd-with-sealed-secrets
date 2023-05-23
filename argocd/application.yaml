@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/acidonper/ocp-gitops-argocd-with-sealed-secrets'
     path: examples/argocd
-    targetRevision: HEAD
+    targetRevision: demo
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: app
