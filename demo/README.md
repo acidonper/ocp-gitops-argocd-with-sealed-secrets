@@ -39,6 +39,8 @@ git push
 
 ```$bash
 oc apply -f argocd/application.yaml -n openshift-gitops
+
+cat argocd/application.yaml
 ```
 
 - Check Sealedsecrets created
