@@ -19,7 +19,7 @@ cat examples/secret-argo.yaml
 
 oc extract --to=- -f examples/secret-argo.yaml 
 
-kubeseal -f examples/secret-argo.yaml --name gitops-sealedsecret \
+kubeseal -f examples/secret-argo.yaml --name gitops-sealedsecret -n app-sealedsecrets \
  --controller-namespace=sealedsecrets \
  --controller-name=sealed-secrets \
  --format yaml > examples/argocd/sealedsecret.yaml
@@ -50,7 +50,7 @@ cat argocd/application.yaml
 oc get secret openshift-gitops-cluster -o jsonpath='{.data.admin\.password}' -n openshift-gitops | base64 -d
 
 # Retrieve URL
-oc get route argocd-server -n argocd
+oc get route  openshift-gitops-server -n  openshift-gitops
 ```
 
 - Check Sealedsecrets created
