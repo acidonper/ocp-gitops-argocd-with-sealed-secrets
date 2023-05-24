@@ -43,27 +43,26 @@ oc apply -f argocd/application.yaml -n openshift-gitops
 cat argocd/application.yaml
 ```
 
-- Check Sealedsecrets created
-
-```$bash
-oc get sealedsecret -n app
-NAME            AGE
-mysecret-argocd        11m
-
-oc get secret -n app
-NAME            AGE
-mysecret-argocd                   Opaque                                1      11m
-```
-
 - Access Argo CD console
 
 ```$bash
 # Retrieve Password
-oc get secret argocd-cluster -o jsonpath='{.data.admin\.password}' -n argocd | base64 -d
+oc get secret openshift-gitops-cluster -o jsonpath='{.data.admin\.password}' -n openshift-gitops | base64 -d
 
 # Retrieve URL
 oc get route argocd-server -n argocd
 ```
+
+- Check Sealedsecrets created
+
+```$bash
+oc get sealedsecret -n app-sealedsecrets
+
+oc get secret -n app-sealedsecrets
+
+oc extract secret/gitops-sealedsecret --to=- -n app-sealedsecrets
+```
+
 
 ## Author
 
