@@ -1,21 +1,30 @@
-# DEMO
+# DEMO - Openshift GitOps - Argo CD with SealedSecrets
+
+This demo includes the basics about setting up an Argo CD environment and using Bitnami SealedSecrets.
+
+## Prerequisites
+
+- Openshift 4.12+
+- Red Hat GitOps Operator
+- Argo CD intance (*installed by default*)
+- kubeseal CLI +0.19.5 - [Official Doc](https://github.com/bitnami-labs/sealed-secrets#linux)
+- Oc CLI +4.12 - [Official Doc](https://docs.openshift.com/container-platform/4.12/cli_reference/openshift_cli/getting-started-cli.html)
 
 ## Setting Up
 
-
-- Create the respective namespace
- 
-```$bash
-oc new-project app
-```
-
-- Create a *Sealed Secret* object from a *Secret* file
+- Create a *Sealed Secret* object from a *Secret* file 
 
 ```$bash
+cat examples/secret-argo.yaml 
+
+oc extract --to=- -f examples/secret-argo.yaml 
+
 kubeseal -f examples/secret-argo.yaml --name gitops-sealedsecret \
  --controller-namespace=sealedsecrets \
  --controller-name=sealed-secrets \
  --format yaml > examples/argocd/sealedsecret.yaml
+
+ cat examples/argocd/sealedsecret.yaml
 ```
 
 - Add Changes to Git
