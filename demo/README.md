@@ -64,6 +64,14 @@ oc get secret -n app-sealedsecrets
 oc extract secret/gitops-sealedsecret --to=- -n app-sealedsecrets
 ```
 
+- Check Sealed Secret microservice logs
+
+
+```$bash
+POD=$(oc get pods --no-headers -o custom-columns=":metadata.name" -n sealedsecrets )
+oc logs $POD -n sealedsecrets
+```
+
 
 ## Author
 
