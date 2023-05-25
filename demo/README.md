@@ -7,6 +7,7 @@ This demo includes the basics about setting up an Argo CD environment and using 
 - Openshift 4.12+
 - Red Hat GitOps Operator
 - Argo CD intance (*installed by default*)
+- Bitnami Sealed Secrets v0.20.5+
 - kubeseal CLI +0.19.5 - [Official Doc](https://github.com/bitnami-labs/sealed-secrets#linux)
 - Oc CLI +4.12 - [Official Doc](https://docs.openshift.com/container-platform/4.12/cli_reference/openshift_cli/getting-started-cli.html)
 
